@@ -1,0 +1,36 @@
+#!/bin/bash
+
+export FSWATCH=`which fswatch`
+
+if [ "$FSWATCH" == "" ]; then
+	echo "[ERROR] cannot find fswatch. Please install fswatch."
+	echo "[HELP] sudo apt install fswatch"
+	exit
+fi
+
+export IN_FILE="$@"
+
+if [ "$IN_FILE" == "" ]; then
+	echo "[HELP] $0 <rust_source_file>"
+	exit
+fi
+
+export OUT_FILE=$(dirname "$@")/$(basename "$@" .rs)
+
+for (( ; ; ))
+do
+	echo ==============================================
+	echo Watching $IN_FILE
+	echo ==============================================
+	fswatch -1m poll_monitor $IN_FILE
+
+	export RETURN=`rustc $IN_FILE`
+
+	if [ -f "$OUT_FILE" ]; then
+		echo ==============================================
+		echo Running $OUT_FILE
+		echo ==============================================
+		$OUT_FILE
+	fi
+done
+
