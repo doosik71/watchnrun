@@ -1,1 +1,1 @@
-**watchrs** is a simple script that watches .rs file and try to build and run if any modification detected.
+**watchnrun** is a simple script that watches a file and run commands if any modification detected.

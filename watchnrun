@@ -1,0 +1,41 @@
+#!/bin/bash
+
+export FSWATCH=`which fswatch`
+export SCRIPT=$0
+export IN_FILE=$1
+shift
+export COMMANDS=$*
+
+# echo FILE=$IN_FILE
+# echo COMMANDS=$COMMANDS
+
+if [ "$FSWATCH" == "" ]; then
+	echo "[ERROR] cannot find fswatch. Please install fswatch."
+	echo "[HELP] sudo apt install fswatch"
+	exit
+fi
+
+if [ "$IN_FILE" == "" ]; then
+	echo "[HELP] $SCRIPT <file_path> <commands>"
+	echo "[EXAMPLE] $SCRIPT test.txt cat test.txt"
+	exit
+fi
+
+for (( ; ; ))
+do
+	echo ====================
+	echo Watching: $IN_FILE
+	echo ====================
+	fswatch -1m poll_monitor $IN_FILE
+
+#	echo RESULT: "$?"
+	sleep 0.5s
+
+	echo ====================
+	echo Executing: $COMMANDS
+	echo ====================
+	$COMMANDS
+
+#	echo RESULT: "$?"
+	sleep 0.5s
+done
